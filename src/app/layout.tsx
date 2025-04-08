@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     title: "Crystal Hotel Room Reservation",
     description:
       "We`re dedicated to helping you find the perfect stay at the best possible price.",
-    url: "https://hotel-room-reservation-rust.vercel.app/",
+    url: "https://hotel-room-reservation-rust.vercel.app",
     siteName: "Crystal Hotel Room Reservation",
     images: {
       url: "/preview.png",
