@@ -2,12 +2,14 @@ import RoomDetail from "@/components/RoomDetail";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
 import React from "react";
+import { unstable_noStore as noStore } from "next/cache";
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  noStore();
   const id = (await params).id;
   const roomName = await prisma.room.findUnique({
     where: {

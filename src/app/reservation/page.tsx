@@ -4,12 +4,14 @@ import { auth } from "@clerk/nextjs/server";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import React from "react";
+import { unstable_noStore as noStore } from "next/cache";
 
 export const metadata: Metadata = {
   title: "Reservation",
 };
 
 const page = async () => {
+  noStore();
   const { userId } = await auth();
   if (!userId) {
     return redirect("/");

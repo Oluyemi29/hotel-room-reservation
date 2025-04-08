@@ -3,11 +3,13 @@ import EditRoom from "@/components/EditRoom";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
 import React from "react";
+import { unstable_noStore as noStore } from "next/cache";
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  noStore();
   const { id } = await params;
   const room = await prisma.room.findUnique({
     where: { id },

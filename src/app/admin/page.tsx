@@ -3,12 +3,14 @@ import { CheckUserRole } from "../api/check-admin/IsAdmin";
 import Summary from "@/components/Summary";
 import { Metadata } from "next";
 import { prisma } from "@/lib/db";
+import { unstable_noStore as noStore } from "next/cache";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard",
 };
 
 const page = async () => {
+  noStore();
   await CheckUserRole();
   const totalReserve = await prisma.reservation.count();
   const skipumber = totalReserve > 7 ? totalReserve - 7 : 0;

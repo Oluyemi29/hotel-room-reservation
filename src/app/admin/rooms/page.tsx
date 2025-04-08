@@ -3,12 +3,14 @@ import AdminUploadedRoom from "@/components/AdminUploadedRoom";
 import { prisma } from "@/lib/db";
 import { Metadata } from "next";
 import React from "react";
+import { unstable_noStore as noStore } from "next/cache";
 
 export const metadata: Metadata = {
   title: "Admin - All Room",
 };
 
 const page = async () => {
+  noStore();
   await CheckUserRole();
   const AllRooms = await prisma.room.findMany({
     orderBy: {
