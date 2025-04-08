@@ -5,7 +5,7 @@ import React from "react";
 const HeroTwo = () => {
   return (
     <div className="text-center">
-      <h1 className="text-2xl font-semibold my-5">Welcome to Hotel</h1>
+      <h1 className="text-2xl font-semibold my-5">Welcome to Crystal Hotel</h1>
       <p className="text-small md:w-[60%] w-[95%] mx-auto text-center">
         Experience luxury, comfort, and exceptional hospitality at Crystal Hotel. Whether you`re here for business or leisure, our elegant rooms
         and world-class amenities ensure a memorable stay. We`re dedicated to

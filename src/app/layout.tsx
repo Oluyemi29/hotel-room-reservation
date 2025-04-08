@@ -18,10 +18,24 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | Hotel Room Reservation",
-    default: "Hotel Room Reservation",
+    template: "%s | Crystal Hotel Room Reservation",
+    default: "Crystal Hotel Room Reservation",
   },
-  description: "Hotel Room Reservation Site",
+  description: "Crystal Hotel Room Reservation Site",
+  openGraph: {
+    title: "Crystal Hotel Room Reservation",
+    description:
+      "We`re dedicated to helping you find the perfect stay at the best possible price.",
+    url: "https://hotel-room-reservation-rust.vercel.app/",
+    siteName: "Crystal Hotel Room Reservation",
+    images: {
+      url: "/preview.png",
+      width: 1200,
+      height: 630,
+      alt: "Crystal Hotel Room Reservation",
+    },
+    type: "website",
+  },
 };
 
 export default function RootLayout({
