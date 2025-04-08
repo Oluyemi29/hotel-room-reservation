@@ -14,8 +14,28 @@
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+.HeroOneStyle {
+  /* background-image: url("https://i.pinimg.com/736x/c5/7b/3c/c57b3cd14908c90fe35547fa051b9982.jpg"); */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: max-content;
+  background-image: url("/hotel-homepage.jpg");
+}
+.AllTheRooms {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: max-content;
+  background-image: url("/hotel-homepage.jpg");
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.typingEffect {
+  animation: blink 0.7s infinite;
+  font-style: italic;
 }

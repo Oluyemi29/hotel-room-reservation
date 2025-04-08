@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String        @id @map("_id") @db.String
+  firstname   String?
+  lastname    String?
+  email       String
+  imageUrl    String
+  role        Role          @default(USER)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Reservation Reservation[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Room {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  price_per_night Int
+  description     String
+  image           String
+  room_size       String
+  bed_type        String
+  max_occupancy   Int
+  amenities       String[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  Reservation     Reservation[]
+}
+
+model Reservation {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  startDate       String
+  endDate         String
+  room            Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId          String   @db.ObjectId
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String   @db.String
+  price           Int
+  status          Status   @default(Pending)
+  paymentIntentId String   @unique
+  clientSecretId  String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  Review          Review[]
+}
+
+enum Status {
+  Pending
+  Completed
+}
+
+model Review {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  description   String
+  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  reservationId String      @db.ObjectId
+  rating        Float
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Subscribe {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
