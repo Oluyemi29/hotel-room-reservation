@@ -4,10 +4,10 @@ import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import Stripe from "stripe";
-import Handlebars from "handlebars";
-import EmailHtmlTemplate from "@/components/EmailHtmlTemplate";
+import { render } from "@react-email/render";
 import nodemailer from "nodemailer";
-import SubscribeMailTem from "@/components/SubscribeMailTem";
+import BookingConfirmation from "@/components/emails/ReservedRoomEmail";
+import SubscribeConfirmation from "@/components/emails/SubscribeConfirmation";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2025-02-24.acacia",
@@ -28,7 +28,6 @@ export const MakeReservation = async ({
   userId,
   price,
 }: ReservationProps) => {
-
   if (!startDate || !endDate || !roomId || !userId || !price) {
     return redirect("/");
   }
@@ -132,36 +131,37 @@ export const UpdateReservationStatus = async ({
     },
   });
   const { endDate, price, startDate, room, user } = reserveUpdated;
-  const data = {
-    username: user.firstname,
-    roomimage: room.image,
-    roomname: room.name,
-    roompricepernight: room.price_per_night,
-    bedtype: room.bed_type,
-    roomsize: room.room_size,
-    maxoccupancy: room.max_occupancy,
-    amenites: room.amenities,
-    startdate: new Date(startDate).toDateString(),
-    enddate: new Date(endDate).toDateString(),
-    totalprice: price,
-  };
+  
+  const html = await render(
+    BookingConfirmation({
+      username: user.firstname as string,
+      roomimage: room.image,
+      roomname: room.name,
+      roompricepernight: room.price_per_night,
+      bedtype: room.bed_type,
+      roomsize: room.room_size,
+      maxoccupancy: room.max_occupancy,
+      amenites: room.amenities,
+      startdate: new Date(startDate).toDateString(),
+      enddate: new Date(endDate).toDateString(),
+      totalprice: price,
+    })
+  );
   const transporter = nodemailer.createTransport({
     service: "gmail",
     port: 587,
-    secure: false, // true for port 465, false for other ports
+    secure: false, 
     auth: {
       user: process.env.USER_EMAIL,
       pass: process.env.USER_PASS,
     },
   });
-  const template = Handlebars.compile(EmailHtmlTemplate);
-  const body = template(data);
   await transporter.sendMail({
-    from: '"Dev Oluyemi 💻" <adedokunoluyemi1@gmail.com>', // sender address
-    to: user.email, // list of receivers
-    subject: "Reserved Room Details", // Subject line
+    from: '"Dev Oluyemi 💻" <adedokunoluyemi1@gmail.com>',
+    to: user.email,
+    subject: "Reserved Room Details",
     replyTo: "no-reply@example.com",
-    html: body, // html body
+    html,
   });
   revalidatePath("/reservation");
   return redirect("/reservation");
@@ -169,10 +169,11 @@ export const UpdateReservationStatus = async ({
 
 export const Subscribe = async (email: string) => {
   const siteLink = process.env.NEXT_PUBLIC_SITE_URL as string;
-  const Templates = Handlebars.compile(SubscribeMailTem);
-  const body = Templates({
-    siteLink: siteLink,
-  });
+  const html = await render(
+    SubscribeConfirmation({
+      siteLink: siteLink as string,
+    })
+  );
   const transporter = nodemailer.createTransport({
     service: "gmail",
     port: 587,
@@ -187,7 +188,7 @@ export const Subscribe = async (email: string) => {
     to: email, // list of receivers
     subject: "Subscription Confirmation", // Subject line
     replyTo: "no-reply@example.com",
-    html: body, // html body
+    html, // html body
   });
   const alreadySubscribe = await prisma.subscribe.findFirst({
     where: {
